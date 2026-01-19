@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import FastAPI, Header, HTTPException
 from app.models import CreateDraftRequest, RejectDraftRequest
 from app.services.draft_service import create_draft, get_draft, update_draft
@@ -15,8 +16,16 @@ async def root():
 
 @app.post("/drafts")
 async def create_metadata_draft(
-    request: CreateDraftRequest, x_user: str = Header(default="system")
+    request: CreateDraftRequest,
+    authenticated_user: Optional[str] = Header(
+        None, alias="X-Goog-Authenticated-User-Email"
+    ),
 ):
+    x_user = (
+        authenticated_user.replace("accounts.google.com:", "")
+        if authenticated_user
+        else "system"
+    )
     draft = create_draft(
         project=request.project,
         dataset=request.dataset,
@@ -36,8 +45,17 @@ async def read_metadata_draft(draft_id: str):
 
 @app.put("/drafts/{draft_id}")
 async def edit_metadata_draft(
-    draft_id: str, metadata_json: dict, x_user: str = Header(default="system")
+    draft_id: str,
+    metadata_json: dict,
+    authenticated_user: Optional[str] = Header(
+        None, alias="X-Goog-Authenticated-User-Email"
+    ),
 ):
+    x_user = (
+        authenticated_user.replace("accounts.google.com:", "")
+        if authenticated_user
+        else "system"
+    )
     try:
         update_draft(draft_id=draft_id, metadata_json=metadata_json, user=x_user)
         return {"status": "updated"}
@@ -48,7 +66,17 @@ async def edit_metadata_draft(
 
 
 @app.post("/drafts/{draft_id}/approve")
-async def approve(draft_id: str, x_user: str = Header(default="system")):
+async def approve(
+    draft_id: str,
+    authenticated_user: Optional[str] = Header(
+        None, alias="X-Goog-Authenticated-User-Email"
+    ),
+):
+    x_user = (
+        authenticated_user.replace("accounts.google.com:", "")
+        if authenticated_user
+        else "system"
+    )
     try:
         approve_draft(draft_id, x_user)
         return {"status": "approved"}
@@ -60,8 +88,17 @@ async def approve(draft_id: str, x_user: str = Header(default="system")):
 
 @app.post("/drafts/{draft_id}/reject")
 async def reject(
-    draft_id: str, payload: RejectDraftRequest, x_user: str = Header(default="system")
+    draft_id: str,
+    payload: RejectDraftRequest,
+    authenticated_user: Optional[str] = Header(
+        None, alias="X-Goog-Authenticated-User-Email"
+    ),
 ):
+    x_user = (
+        authenticated_user.replace("accounts.google.com:", "")
+        if authenticated_user
+        else "system"
+    )
     try:
         reject_draft(draft_id, x_user, payload.reason)
         return {"status": "rejected"}
@@ -72,7 +109,17 @@ async def reject(
 
 
 @app.post("/drafts/{draft_id}/publish")
-async def publish(draft_id: str, x_user: str = Header(default="system")):
+async def publish(
+    draft_id: str,
+    authenticated_user: Optional[str] = Header(
+        None, alias="X-Goog-Authenticated-User-Email"
+    ),
+):
+    x_user = (
+        authenticated_user.replace("accounts.google.com:", "")
+        if authenticated_user
+        else "system"
+    )
     try:
         publish_draft(draft_id, x_user)
         return {"status": "published"}
