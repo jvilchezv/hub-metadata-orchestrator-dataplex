@@ -18,9 +18,9 @@ def publish_draft(draft_id: str, user: str):
     if draft["status"] != DraftStatus.APPROVED.value:
         raise RuntimeError("Only APPROVED drafts can be published")
 
-    entry_name = build_bq_entry_name(
-        project=draft["project"], dataset=draft["dataset"], table=draft["table"]
-    )
+    fqdn = draft["fqdn"].split(".")
+
+    entry_name = build_bq_entry_name(project=fqdn[0], dataset=fqdn[1], table=fqdn[2])
 
     aspects = map_metadata_to_descriptions_aspect(draft["metadata_json"])
 

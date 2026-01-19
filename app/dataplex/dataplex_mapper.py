@@ -5,7 +5,7 @@ def map_metadata_to_descriptions_aspect(metadata_json: dict) -> dict:
     return {
         f"{DATAPLEX_GOV_PROJECT}.{DATAPLEX_LOCATION}.descriptions": {
             "data": {
-                "description": metadata_json["table"]["description"],
+                "description": metadata_json["table_description"]["description"],
                 "fields": [
                     {
                         "name": col["name"],
