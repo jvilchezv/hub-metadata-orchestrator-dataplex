@@ -2,7 +2,9 @@ import os
 
 METADATA_GENERATOR_URL = os.getenv(
     "METADATA_GENERATOR_URL", "https://metadata-api-zgs4exg6rq-uk.a.run.app"
-)
+).rstrip('/')
+
+METADATA_GENERATOR_AUDIENCE = METADATA_GENERATOR_URL
 
 # Proyecto de GOBIERNO (Aspect Types viven aquí)
 DATAPLEX_GOV_PROJECT = os.getenv("DATAPLEX_GOV_PROJECT", "rs-nprd-dlk-dd-trsv-ede4")
