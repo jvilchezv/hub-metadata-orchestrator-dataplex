@@ -8,8 +8,13 @@ from app.services.publish_service import publish_draft
 app = FastAPI()
 
 
+@app.get("/")
+async def root():
+    return {"message": "Metadata Drafting Service is running."}
+
+
 @app.post("/drafts")
-def create_metadata_draft(
+async def create_metadata_draft(
     request: CreateDraftRequest, x_user: str = Header(default="system")
 ):
     draft = create_draft(
@@ -22,7 +27,7 @@ def create_metadata_draft(
 
 
 @app.get("/drafts/{draft_id}")
-def read_metadata_draft(draft_id: str):
+async def read_metadata_draft(draft_id: str):
     try:
         return get_draft(draft_id)
     except ValueError:
@@ -30,7 +35,7 @@ def read_metadata_draft(draft_id: str):
 
 
 @app.put("/drafts/{draft_id}")
-def edit_metadata_draft(
+async def edit_metadata_draft(
     draft_id: str, metadata_json: dict, x_user: str = Header(default="system")
 ):
     try:
@@ -43,7 +48,7 @@ def edit_metadata_draft(
 
 
 @app.post("/drafts/{draft_id}/approve")
-def approve(draft_id: str, x_user: str = Header(default="system")):
+async def approve(draft_id: str, x_user: str = Header(default="system")):
     try:
         approve_draft(draft_id, x_user)
         return {"status": "approved"}
@@ -54,7 +59,7 @@ def approve(draft_id: str, x_user: str = Header(default="system")):
 
 
 @app.post("/drafts/{draft_id}/reject")
-def reject(
+async def reject(
     draft_id: str, payload: RejectDraftRequest, x_user: str = Header(default="system")
 ):
     try:
@@ -67,7 +72,7 @@ def reject(
 
 
 @app.post("/drafts/{draft_id}/publish")
-def publish(draft_id: str, x_user: str = Header(default="system")):
+async def publish(draft_id: str, x_user: str = Header(default="system")):
     try:
         publish_draft(draft_id, x_user)
         return {"status": "published"}
