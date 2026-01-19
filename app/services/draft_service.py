@@ -17,7 +17,7 @@ def create_draft(project: str, dataset: str, table: str, user: str):
         "fqdn": f"{project}.{dataset}.{table}",
         "status": DraftStatus.DRAFT.value,
         "metadata_json": metadata,
-        "created_at": datetime.now(timezone.utc),
+        "created_at": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S %Z"),
         "created_by": user,
         "updated_at": None,
         "updated_by": None,
