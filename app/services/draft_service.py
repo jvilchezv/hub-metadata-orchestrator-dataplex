@@ -23,7 +23,7 @@ def create_draft(project: str, dataset: str, table: str, user: str):
         "updated_by": None,
         "approved_at": None,
         "approved_by": None,
-        "decision_reason": None
+        "rejection_reason": None
     }
 
     draft_store.insert_draft(draft)
