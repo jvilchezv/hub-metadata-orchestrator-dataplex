@@ -16,27 +16,16 @@ def publish_draft(draft_id: str, user: str):
         raise ValueError("Draft not found")
 
     if draft["status"] != DraftStatus.APPROVED.value:
-        raise RuntimeError(
-            "Only APPROVED drafts can be published"
-        )
+        raise RuntimeError("Only APPROVED drafts can be published")
 
     entry_name = build_bq_entry_name(
-        project=draft["project"],
-        dataset=draft["dataset"],
-        table=draft["table"]
+        project=draft["project"], dataset=draft["dataset"], table=draft["table"]
     )
 
-    aspects = map_metadata_to_descriptions_aspect(
-        draft["metadata_json"]
-    )
+    aspects = map_metadata_to_descriptions_aspect(draft["metadata_json"])
 
-    publisher.publish_descriptions(
-        entry_name=entry_name,
-        aspects=aspects
-    )
+    publisher.publish_descriptions(entry_name=entry_name, aspects=aspects)
 
     draft_store.update_status(
-        draft_id=draft_id,
-        status=DraftStatus.PUBLISHED.value,
-        user=user
+        draft_id=draft_id, status=DraftStatus.PUBLISHED.value, user=user
     )

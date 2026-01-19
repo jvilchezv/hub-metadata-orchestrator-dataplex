@@ -4,7 +4,6 @@ from app.config import GCP_PROJECT_ID, DRAFT_DATASET, DRAFT_TABLE
 
 
 class BigQueryDraftStore:
-
     def __init__(self):
         self.client = bigquery.Client(project=GCP_PROJECT_ID)
         self.table_id = f"{GCP_PROJECT_ID}.{DRAFT_DATASET}.{DRAFT_TABLE}"
@@ -26,9 +25,7 @@ class BigQueryDraftStore:
             query,
             job_config=bigquery.QueryJobConfig(
                 query_parameters=[
-                    bigquery.ScalarQueryParameter(
-                        "draft_id", "STRING", draft_id
-                    )
+                    bigquery.ScalarQueryParameter("draft_id", "STRING", draft_id)
                 ]
             ),
         )
@@ -39,12 +36,7 @@ class BigQueryDraftStore:
 
         return dict(rows[0])
 
-    def update_draft(
-        self,
-        draft_id: str,
-        metadata_json: dict,
-        updated_by: str
-    ):
+    def update_draft(self, draft_id: str, metadata_json: dict, updated_by: str):
         query = f"""
         UPDATE `{self.table_id}`
         SET
@@ -56,29 +48,19 @@ class BigQueryDraftStore:
 
         job_config = bigquery.QueryJobConfig(
             query_parameters=[
-                bigquery.ScalarQueryParameter(
-                    "metadata_json", "JSON", metadata_json
-                ),
+                bigquery.ScalarQueryParameter("metadata_json", "JSON", metadata_json),
                 bigquery.ScalarQueryParameter(
                     "updated_at", "TIMESTAMP", datetime.now(timezone.utc)
                 ),
-                bigquery.ScalarQueryParameter(
-                    "updated_by", "STRING", updated_by
-                ),
-                bigquery.ScalarQueryParameter(
-                    "draft_id", "STRING", draft_id
-                ),
+                bigquery.ScalarQueryParameter("updated_by", "STRING", updated_by),
+                bigquery.ScalarQueryParameter("draft_id", "STRING", draft_id),
             ]
         )
 
         self.client.query(query, job_config=job_config).result()
 
     def update_status(
-        self,
-        draft_id: str,
-        status: str,
-        user: str,
-        rejection_reason: str | None = None
+        self, draft_id: str, status: str, user: str, rejection_reason: str | None = None
     ):
         query = f"""
         UPDATE `{self.table_id}`
@@ -102,9 +84,7 @@ class BigQueryDraftStore:
                 bigquery.ScalarQueryParameter(
                     "rejection_reason", "STRING", rejection_reason
                 ),
-                bigquery.ScalarQueryParameter(
-                    "draft_id", "STRING", draft_id
-                ),
+                bigquery.ScalarQueryParameter("draft_id", "STRING", draft_id),
             ]
         )
 

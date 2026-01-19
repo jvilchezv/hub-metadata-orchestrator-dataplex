@@ -21,7 +21,7 @@ def create_draft(project: str, dataset: str, table: str, user: str):
         "created_by": user,
         "updated_at": None,
         "updated_by": None,
-        "decision_reason": None
+        "decision_reason": None,
     }
 
     draft_store.insert_draft(draft)
@@ -36,27 +36,19 @@ def get_draft(draft_id: str) -> dict:
 
     return draft
 
-def update_draft(
-    draft_id: str,
-    metadata_json: dict,
-    user: str
-):
+
+def update_draft(draft_id: str, metadata_json: dict, user: str):
     draft = draft_store.get_draft(draft_id)
 
     if not draft:
         raise ValueError("Draft not found")
 
     if draft["status"] != DraftStatus.DRAFT.value:
-        raise RuntimeError(
-            f"Cannot edit draft in status {draft['status']}"
-        )
+        raise RuntimeError(f"Cannot edit draft in status {draft['status']}")
 
     # 🔒 Aquí deberías reutilizar tu metadata_schema validator
     # validate_metadata_schema(metadata_json)
 
     draft_store.update_draft(
-        draft_id=draft_id,
-        metadata_json=metadata_json,
-        updated_by=user
+        draft_id=draft_id, metadata_json=metadata_json, updated_by=user
     )
-

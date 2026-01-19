@@ -29,5 +29,6 @@ class MetadataDraft(BaseModel):
 class DecisionRequest(BaseModel):
     reason: Optional[str] = None
 
+
 class RejectDraftRequest(BaseModel):
     reason: str

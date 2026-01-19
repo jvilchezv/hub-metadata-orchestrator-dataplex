@@ -10,11 +10,11 @@ def map_metadata_to_descriptions_aspect(metadata_json: dict) -> dict:
                     {
                         "name": col["name"],
                         "description": col["description"],
-                        "fields": []
+                        "fields": [],
                     }
                     for col in metadata_json.get("columns", [])
                 ],
-                "userManaged": True
+                "userManaged": True,
             }
         }
     }

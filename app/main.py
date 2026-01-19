@@ -7,18 +7,19 @@ from app.services.publish_service import publish_draft
 
 app = FastAPI()
 
+
 @app.post("/drafts")
 def create_metadata_draft(
-    request: CreateDraftRequest,
-    x_user: str = Header(default="system")
+    request: CreateDraftRequest, x_user: str = Header(default="system")
 ):
     draft = create_draft(
         project=request.project,
         dataset=request.dataset,
         table=request.table,
-        user=x_user
+        user=x_user,
     )
     return draft
+
 
 @app.get("/drafts/{draft_id}")
 def read_metadata_draft(draft_id: str):
@@ -27,29 +28,22 @@ def read_metadata_draft(draft_id: str):
     except ValueError:
         raise HTTPException(status_code=404, detail="Draft not found")
 
+
 @app.put("/drafts/{draft_id}")
 def edit_metadata_draft(
-    draft_id: str,
-    metadata_json: dict,
-    x_user: str = Header(default="system")
+    draft_id: str, metadata_json: dict, x_user: str = Header(default="system")
 ):
     try:
-        update_draft(
-            draft_id=draft_id,
-            metadata_json=metadata_json,
-            user=x_user
-        )
+        update_draft(draft_id=draft_id, metadata_json=metadata_json, user=x_user)
         return {"status": "updated"}
     except ValueError:
         raise HTTPException(status_code=404, detail="Draft not found")
     except RuntimeError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+
 @app.post("/drafts/{draft_id}/approve")
-def approve(
-    draft_id: str,
-    x_user: str = Header(default="system")
-):
+def approve(draft_id: str, x_user: str = Header(default="system")):
     try:
         approve_draft(draft_id, x_user)
         return {"status": "approved"}
@@ -61,27 +55,19 @@ def approve(
 
 @app.post("/drafts/{draft_id}/reject")
 def reject(
-    draft_id: str,
-    payload: RejectDraftRequest,
-    x_user: str = Header(default="system")
+    draft_id: str, payload: RejectDraftRequest, x_user: str = Header(default="system")
 ):
     try:
-        reject_draft(
-            draft_id,
-            x_user,
-            payload.reason
-        )
+        reject_draft(draft_id, x_user, payload.reason)
         return {"status": "rejected"}
     except ValueError:
         raise HTTPException(status_code=404, detail="Draft not found")
     except RuntimeError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+
 @app.post("/drafts/{draft_id}/publish")
-def publish(
-    draft_id: str,
-    x_user: str = Header(default="system")
-):
+def publish(draft_id: str, x_user: str = Header(default="system")):
     try:
         publish_draft(draft_id, x_user)
         return {"status": "published"}

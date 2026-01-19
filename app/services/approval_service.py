@@ -11,35 +11,25 @@ def approve_draft(draft_id: str, user: str):
         raise ValueError("Draft not found")
 
     if draft["status"] != DraftStatus.DRAFT.value:
-        raise RuntimeError(
-            f"Draft in status {draft['status']} cannot be approved"
-        )
+        raise RuntimeError(f"Draft in status {draft['status']} cannot be approved")
 
     draft_store.update_status(
-        draft_id=draft_id,
-        status=DraftStatus.APPROVED.value,
-        user=user
+        draft_id=draft_id, status=DraftStatus.APPROVED.value, user=user
     )
 
 
-def reject_draft(
-    draft_id: str,
-    user: str,
-    reason: str
-):
+def reject_draft(draft_id: str, user: str, reason: str):
     draft = draft_store.get_draft(draft_id)
 
     if not draft:
         raise ValueError("Draft not found")
 
     if draft["status"] != DraftStatus.DRAFT.value:
-        raise RuntimeError(
-            f"Draft in status {draft['status']} cannot be rejected"
-        )
+        raise RuntimeError(f"Draft in status {draft['status']} cannot be rejected")
 
     draft_store.update_status(
         draft_id=draft_id,
         status=DraftStatus.REJECTED.value,
         user=user,
-        rejection_reason=reason
+        rejection_reason=reason,
     )
