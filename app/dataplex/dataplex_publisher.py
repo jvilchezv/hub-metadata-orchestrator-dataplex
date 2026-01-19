@@ -1,6 +1,7 @@
 from google.cloud import dataplex_v1
 from google.api_core.client_options import ClientOptions
 from typing import Optional
+from google.protobuf import field_mask_pb2
 
 
 class DataplexPublisher:
@@ -16,11 +17,12 @@ class DataplexPublisher:
             credentials: Optional credentials for authentication
             client_options: Optional client options (e.g., for regional endpoints)
         """
-        self.client = dataplex_v1.DataplexServiceClient(
+        self.client = dataplex_v1.CatalogServiceClient(
             credentials=credentials, client_options=client_options
         )
 
     def publish_descriptions(self, entry_name: str, aspects: dict):
         entry = dataplex_v1.Entry(name=entry_name, aspects=aspects)
+        mask = field_mask_pb2.FieldMask(paths=["aspects"])
 
-        self.client.update_entry(entry=entry, update_mask="aspects")
+        self.client.update_entry(entry=entry, update_mask=mask)
