@@ -9,9 +9,23 @@ class BigQueryDraftStore:
         self.table_id = f"{GCP_PROJECT_ID}.{DRAFT_DATASET}.{DRAFT_TABLE}"
 
     def insert_draft(self, draft: dict):
-        errors = self.client.insert_rows_json(self.table_id, [draft])
-        if errors:
-            raise RuntimeError(f"Failed to insert draft: {errors}")
+        job_config = bigquery.LoadJobConfig(
+            source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
+            write_disposition="WRITE_APPEND",
+        )
+
+        try:
+            job = self.client.load_table_from_json(
+                [draft], 
+                self.table_id, 
+                job_config=job_config
+            )
+            job.result()
+
+        except Exception as e:
+            print(f"Error detallado en la carga a BigQuery: {str(e)}")
+            raise RuntimeError(f"Failed to insert draft: {str(e)}")
+
 
     def get_draft(self, draft_id: str) -> dict | None:
         query = f"""
