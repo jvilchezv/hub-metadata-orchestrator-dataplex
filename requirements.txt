@@ -4,3 +4,4 @@ requests
 pydantic
 google-cloud-bigquery
 google-cloud-dataplex
+google-auth
