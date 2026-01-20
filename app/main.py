@@ -4,7 +4,13 @@ from app.models import CreateDraftRequest, RejectDraftRequest
 from app.services.draft_service import create_draft, get_draft, update_draft
 from app.services.approval_service import approve_draft, reject_draft
 from app.services.publish_service import publish_draft
+import logging
 
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s | %(levelname)s | %(name)s | %(message)s"
+)
+
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 

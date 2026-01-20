@@ -1,6 +1,9 @@
 from google.cloud import bigquery
 from datetime import datetime, timezone
 from app.config import GCP_PROJECT_ID, DRAFT_DATASET, DRAFT_TABLE
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class BigQueryDraftStore:
@@ -16,16 +19,13 @@ class BigQueryDraftStore:
 
         try:
             job = self.client.load_table_from_json(
-                [draft], 
-                self.table_id, 
-                job_config=job_config
+                [draft], self.table_id, job_config=job_config
             )
             job.result()
 
         except Exception as e:
             print(f"Error detallado en la carga a BigQuery: {str(e)}")
             raise RuntimeError(f"Failed to insert draft: {str(e)}")
-
 
     def get_draft(self, draft_id: str) -> dict | None:
         query = f"""
